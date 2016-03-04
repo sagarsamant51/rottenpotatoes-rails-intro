@@ -10,4 +10,8 @@ module MoviesHelper
       return nil
     end
   end
+  #new helper function to check all the check boxes in the beginning. It'll be called with check_box_tag
+  def is_ratings_selected?(rating)
+    session[:ratings].include?(rating)
+  end
 end

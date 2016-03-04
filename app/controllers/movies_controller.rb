@@ -11,13 +11,17 @@ class MoviesController < ApplicationController
   end
 
   def index
+    if !session.has_key?(:ratings)
+	  session[:ratings]=Movie.get_all_rating
+    end
+    #if this was reached through refresh, params[:ratings] will be a hash whose keys wil be PG,R etc
+    if params.has_key?(:ratings) and  params[:ratings].keys.length > 0
+	  session[:ratings]=params[:ratings].keys
+    end
     @movies = Movie.all
-    if params[:sort_by].to_s()=='title'
-	@movies=@movies.order('title')
-    end
-    if params[:sort_by].to_s()=='release_date'
-	@movies=@movies.order('release_date')
-    end
+	  @movies=@movies.order(params[:sort_by].to_s)
+	  @movies=@movies.where(rating: session[:ratings])
+    @all_ratings=Movie.get_all_rating
   end
 
   def new
