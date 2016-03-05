@@ -19,7 +19,19 @@ class MoviesController < ApplicationController
 	  session[:ratings]=params[:ratings].keys
     end
     @movies = Movie.all
-	  @movies=@movies.order(params[:sort_by].to_s)
+    if params.has_key?(:sort_by)
+    session[:sort_by]=params[:sort_by]
+    end
+	  if session.has_key?(:sort_by)
+	     @movies=@movies.order(session[:sort_by].to_s)
+	     [Movie,'hilite']
+	     if session[:sort_by]=='title'
+	       @color='t';
+	     end
+	     if session[:sort_by]=='release_date'
+	       @color='r'
+	     end
+	  end
 	  @movies=@movies.where(rating: session[:ratings])
     @all_ratings=Movie.get_all_rating
   end
